@@ -39,7 +39,7 @@ jobs:
           git clone https://gitlab.cern.ch/jalien/jalien
           cd ./jalien-setup && git checkout origin/updated-sql8-setup
       - name: debug
-        run: ls ${{ github.workspace }}/../jalien-setup
+        run: cat ${{ github.workspace }}/../jalien-setup/bash/tasks/create_shared.sh
       - name: Create config.sh for bash
         run: |
           cd ${{ github.workspace }}
