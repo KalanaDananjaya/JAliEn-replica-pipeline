@@ -37,7 +37,6 @@ jobs:
           cd ${{ github.workspace }}
           cd ..
           git clone https://gitlab.cern.ch/jalien/jalien
-          git checkout origin/updated-sql8-setup
       - name: debug
         run: ls ${{ github.workspace }}/../jalien-setup
       - name: Create config.sh for bash
