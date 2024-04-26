@@ -33,7 +33,7 @@ jobs:
           cd ..
           git clone https://gitlab.cern.ch/jalien/jalien-setup
       - name: debug
-        run ls ../
+        run: ls ../
       - name: Clone jalien
         run: |
           cd ${{ github.workspace }}
