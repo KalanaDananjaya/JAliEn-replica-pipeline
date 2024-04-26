@@ -1,6 +1,6 @@
 name: Verify jalien-setup
 on:
-  pull_request:
+  push:
     branches:
       - main
   workflow_dispatch:
@@ -32,8 +32,6 @@ jobs:
           cd ${{ github.workspace }}
           cd ..
           git clone https://gitlab.cern.ch/jalien/jalien-setup
-      - name: debug
-        run: ls ../
       - name: Clone jalien
         run: |
           cd ${{ github.workspace }}
@@ -57,6 +55,8 @@ jobs:
           export SE_NAME=shared_volume_JCentral-dev-SE_1
           export WORKER_NAME=shared_volume_worker1_1
           " >> ${{ github.workspace }}/../jalien-setup/bash/config/config.sh  
+      - name: debug
+        run: ls ${{ github.workspace }}/../jalien-setup
       - name: Run jalien-setup bash scripts
         run: |
           cd ${{ github.workspace }}/../jalien-setup/bash
