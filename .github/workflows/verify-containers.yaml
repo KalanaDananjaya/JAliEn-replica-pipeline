@@ -4,21 +4,7 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'information'
-        type: choice
-        options:
-          - information
-          - debug
-          - warning
-          - critical
-      tags:
-        description: 'Purpose of Run This Workflow?'
-        required: false
-        type: string
+
 jobs:
   test-jalien-setup:
     runs-on: ubuntu-latest
@@ -67,7 +53,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           cd ..
-          git clone https://github.com/FYP-Jalien/test-suite
+          git clone https://gitlab.cern.ch/jalien/test-suite
       - name: Create .env for test-suite
         run: |
           cd ${{ github.workspace }}
