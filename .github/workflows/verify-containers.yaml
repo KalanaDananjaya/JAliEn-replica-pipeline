@@ -10,7 +10,7 @@ on:
         required: false
         default: 'latest'
 
-run-name: ${{ github.event_name == 'workflow_dispatch' && format('Test Pipeline- Tag:{0}, Branch:{1}', tojson(inputs.tag), github.ref_name) || '' }}
+run-name: ${{ github.event_name == 'workflow_dispatch' && format('Commit:, {0} Tag:{1}, Branch:{2}', ${{ github.event.head_commit.message }}, tojson(inputs.tag), github.ref_name) || '' }}
 
 jobs:
   test-jalien-setup:
