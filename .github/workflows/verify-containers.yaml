@@ -53,7 +53,7 @@ jobs:
       - name: Run jalien-setup bash scripts
         run: |
           cd ${{ github.workspace }}/../jalien-setup/bash
-          ./start.sh --shared
+          ./start.sh --shared --${{ github.event.inputs.tag }}
       - name: Clone test-suite
         run: |
           cd ${{ github.workspace }}
