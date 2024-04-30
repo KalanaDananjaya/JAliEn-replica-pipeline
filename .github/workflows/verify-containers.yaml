@@ -4,6 +4,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag'     
+        required: false
+        default: 'latest'
 
 jobs:
   test-jalien-setup:
