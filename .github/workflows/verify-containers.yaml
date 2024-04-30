@@ -79,4 +79,4 @@ jobs:
       - name: Run test-suite for container specific tests
         run: |
           cd ${{ github.workspace }}/../test-suite
-          ./index.sh --container-only      
+          ./index.sh --container-only ${{ github.event.inputs.tag }}
