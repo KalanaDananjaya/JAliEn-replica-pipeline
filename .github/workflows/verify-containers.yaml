@@ -18,7 +18,8 @@ on:
         required: false
         default: 'master'
 
-run-name: ${{ github.event_name == 'workflow_dispatch' }} && format('Commit- {0} Tag:{1}, Branch:{2}', ${{ github.event.head_commit.message }}, tojson(inputs.image_tag), github.ref_name) || '' }}
+# run-name: ${{ github.event_name == 'workflow_dispatch' }} && format('Commit- {0} Tag:{1}, Branch:{2}', ${{ github.event.head_commit.message }}, tojson(inputs.image_tag), github.ref_name) || '' }}
+run-name: ${{ github.event_name == 'workflow_dispatch' && format('Tag:{0}, Branch:{1}', tojson(inputs.image_tag), github.ref_name) || '' }}
 
 jobs:
   test-jalien-setup:
