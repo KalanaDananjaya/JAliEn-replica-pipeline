@@ -5,12 +5,20 @@ on:
       - main
   workflow_dispatch:
     inputs:
-      tag:
+      image_tag:
         description: 'Image tag'     
         required: false
         default: 'latest'
+      source_jalien_repo:
+        description: 'Source JAliEn Repo'     
+        required: false
+        default: 'https://gitlab.cern.ch/jalien/jalien'
+      source_jalien_branch:
+        description: 'Source JAliEn Repo Branch'     
+        required: false
+        default: 'master'
 
-run-name: ${{ github.event_name == 'workflow_dispatch' && format('Commit:, {0} Tag:{1}, Branch:{2}', ${{ github.event.head_commit.message }}, tojson(inputs.tag), github.ref_name) || '' }}
+run-name: ${{ github.event_name == 'workflow_dispatch' && format('Commit:, {0} Tag:{1}, Branch:{2}', ${{ github.event.head_commit.message }}, tojson(inputs.image_tag), github.ref_name) || '' }}
 
 jobs:
   test-jalien-setup:
@@ -25,12 +33,13 @@ jobs:
           cd ${{ github.workspace }}
           cd ..
           git clone https://gitlab.cern.ch/jalien/jalien-setup
+          cd ./jalien-setup && git checkout origin/updated-sql8-setup
       - name: Clone jalien
         run: |
           cd ${{ github.workspace }}
           cd ..
-          git clone https://gitlab.cern.ch/jalien/jalien
-          cd ./jalien-setup && git checkout origin/updated-sql8-setup
+          git clone ${{ github.event.inputs.source_jalien_repo }}
+          cd ./jalien && git checkout origin/${{ github.event.inputs.source_jalien_branch }}
       - name: debug
         run: cat ${{ github.workspace }}/../jalien-setup/bash/tasks/create_shared.sh
       - name: Create config.sh for bash
@@ -43,7 +52,7 @@ jobs:
           export SHARED_VOLUME=$(pwd)/SHARED_VOLUME
           export JALIEN=$(pwd)/jalien
           export JALIEN_SETUP=$(pwd)/jalien-setup
-          export JALIEN_SOURCE=https://gitlab.cern.ch/jalien/jalien
+          export JALIEN_SOURCE=${{ github.event.inputs.source_jalien_repo }}
           export JALIEN_SETUP_SOURCE=https://github.com/FYP-Jalien/jalien-setup
           export CE_NAME=shared_volume_JCentral-dev-CE_1
           export JCENTRAL_NAME=shared_volume_JCentral-dev_1
@@ -55,7 +64,7 @@ jobs:
       - name: Run jalien-setup bash scripts
         run: |
           cd ${{ github.workspace }}/../jalien-setup/bash
-          ./start.sh --shared --${{ github.event.inputs.tag }}
+          ./start.sh --shared --${{ github.event.inputs.image_tag }}
       - name: Clone test-suite
         run: |
           cd ${{ github.workspace }}
@@ -81,4 +90,4 @@ jobs:
       - name: Run test-suite for container specific tests
         run: |
           cd ${{ github.workspace }}/../test-suite
-          ./index.sh --container-only --${{ github.event.inputs.tag }}
+          ./index.sh --container-only --${{ github.event.inputs.image_tag }}
