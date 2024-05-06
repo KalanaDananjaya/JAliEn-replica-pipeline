@@ -48,20 +48,21 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           cd ..
+          ROOT_PATH=${{ github.workspace }}/..
           echo "
-          export BASE_DIR=$(pwd)
-          export SCRIPT_DIR=$(pwd)/jalien-setup/bash
-          export SHARED_VOLUME=$(pwd)/SHARED_VOLUME
-          export JALIEN=$(pwd)/jalien
-          export JALIEN_SETUP=$(pwd)/jalien-setup
+          export BASE_DIR=${ROOT_PATH}
+          export SCRIPT_DIR=${ROOT_PATH}/jalien-setup/bash
+          export SHARED_VOLUME=${ROOT_PATH}/SHARED_VOLUME
+          export JALIEN=${ROOT_PATH}/jalien
+          export JALIEN_SETUP=${ROOT_PATH}/jalien-setup
           export JALIEN_SOURCE=${{ github.event.inputs.source_jalien_repo }}
-          export JALIEN_SETUP_SOURCE=https://github.com/FYP-Jalien/jalien-setup
+          export JALIEN_SETUP_SOURCE=https://gitlab.cern.ch/jalien/jalien-setup
           export CE_NAME=shared_volume_JCentral-dev-CE_1
           export JCENTRAL_NAME=shared_volume_JCentral-dev_1
           export SCHEDD_NAME=shared_volume_schedd_1
           export SE_NAME=shared_volume_JCentral-dev-SE_1
           export WORKER_NAME=shared_volume_worker1_1
-          " >> ${{ github.workspace }}/../jalien-setup/bash/config/config.sh  
+          " >> ${ROOT_PATH}/jalien-setup/bash/config/config.sh  
       
       # For production image setup
       - name: Run jalien-setup bash scripts
@@ -86,22 +87,23 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           cd ..
+          ROOT_PATH=${{ github.workspace }}/..
           echo "
-          export SHARED_VOLUME_PATH=$(pwd)/SHARED_VOLUME
-          export JALIEN_SETUP_PATH=$(pwd)/jalien-setup
-          export JALIEN_PATH=${{ github.workspace }}/../jalien
+          export SHARED_VOLUME_PATH=${ROOT_PATH}/SHARED_VOLUME
+          export JALIEN_SETUP_PATH=${ROOT_PATH}/jalien-setup
+          export JALIEN_PATH=${ROOT_PATH}/jalien
           export CONTAINER_NAME_CE=shared_volume_JCentral-dev-CE_1
           export CONTAINER_NAME_CENTRAL=shared_volume_JCentral-dev_1
           export CONTAINER_NAME_SCHEDD=shared_volume_schedd_1
           export CONTAINER_NAME_SE=shared_volume_JCentral-dev-SE_1
           export CONTAINER_NAME_WORKER=shared_volume_worker1_1
           export CONTAINER_REGISTRY=gitlab-registry.cern.ch/jalien/jalien-setup
-          export SCRIPT_DIR=$(pwd)/test-suite
-          export ALIENV_PATH=$(pwd)/test-suite/files/alma-alienv
-          export SAMPLE_JDL_PATH=$(pwd)/test-suite/files/sample_test.jdl
-          export TESTSCRIPT_PATH=$(pwd)/test-suite/files/testscript_test.sh
-          " >> ${{ github.workspace }}/../test-suite/.env  
-          cat ${{ github.workspace }}/../test-suite/.env  
+          export SCRIPT_DIR=${ROOT_PATH}/test-suite
+          export ALIENV_PATH=${ROOT_PATH}/test-suite/files/alma-alienv
+          export SAMPLE_JDL_PATH=${ROOT_PATH}/test-suite/files/sample_test.jdl
+          export TESTSCRIPT_PATH=${ROOT_PATH}/test-suite/files/testscript_test.sh
+          " >> ${ROOT_PATH}/test-suite/.env  
+          cat ${ROOT_PATH}/test-suite/.env  
 
       # For production image setup
       - name: Run test-suite for all tests
