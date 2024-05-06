@@ -42,42 +42,6 @@ jobs:
           cd ..
           git clone ${{ github.event.inputs.source_jalien_repo }}
           cd ./jalien && git checkout origin/${{ github.event.inputs.source_jalien_branch }}
-      - name: debug
-        run: cat ${{ github.workspace }}/../jalien-setup/bash/tasks/create_shared.sh
-      - name: Create config.sh for bash
-        run: |
-          cd ${{ github.workspace }}
-          cd ..
-          ROOT_PATH=${{ github.workspace }}/..
-          echo "
-          export BASE_DIR=${ROOT_PATH}
-          export SCRIPT_DIR=${ROOT_PATH}/jalien-setup/bash
-          export SHARED_VOLUME=${ROOT_PATH}/SHARED_VOLUME
-          export JALIEN=${ROOT_PATH}/jalien
-          export JALIEN_SETUP=${ROOT_PATH}/jalien-setup
-          export JALIEN_SOURCE=${{ github.event.inputs.source_jalien_repo }}
-          export JALIEN_SETUP_SOURCE=https://gitlab.cern.ch/jalien/jalien-setup
-          export CE_NAME=shared_volume_JCentral-dev-CE_1
-          export JCENTRAL_NAME=shared_volume_JCentral-dev_1
-          export SCHEDD_NAME=shared_volume_schedd_1
-          export SE_NAME=shared_volume_JCentral-dev-SE_1
-          export WORKER_NAME=shared_volume_worker1_1
-          " >> ${ROOT_PATH}/jalien-setup/bash/config/config.sh  
-      
-      # For production image setup
-      - name: Run jalien-setup bash scripts
-        if: ${{ github.event.inputs.image_tag == 'latest' }}
-        run: |
-          cd ${{ github.workspace }}/../jalien-setup/bash
-          ./start.sh --shared --latest
-      
-      # For test image setup
-      - name: Run jalien-setup bash scripts
-        if: ${{ github.event.inputs.image_tag == 'test' }}
-        run: |
-          cd ${{ github.workspace }}/../jalien-setup/bash
-          ./start.sh --shared --test
-
       - name: Clone test-suite
         run: |
           cd ${{ github.workspace }}
@@ -104,13 +68,66 @@ jobs:
           export TESTSCRIPT_PATH=${ROOT_PATH}/test-suite/files/testscript_test.sh
           " >> ${ROOT_PATH}/test-suite/.env  
           cat ${ROOT_PATH}/test-suite/.env  
+      - name: Update /etc/hosts
+        if: ${{ github.event.inputs.image_tag == 'latest' }}
+        run: |
+          sudo bash -c "echo '
+          127.0.0.1       JCentral-dev
+          127.0.0.1       JCentral-dev-SE
+          172.18.0.2      alice-jcentral.cern.ch
+          ' >> /etc/hosts"
+      - name: Install xrootd
+        if: ${{ github.event.inputs.image_tag == 'latest' }}
+        run: |
+          sudo apt install xrootd-client xrootd-server python3-xrootd
 
+      - name: Run host specific tests
+        if: ${{ github.event.inputs.image_tag == 'latest' }}
+        run: |
+          cd ${{ github.workspace }}/../test-suite
+          ./index.sh --host-only
+
+      - name: Create config.sh for bash
+        run: |
+          cd ${{ github.workspace }}
+          cd ..
+          ROOT_PATH=${{ github.workspace }}/..
+          echo "
+          export BASE_DIR=${ROOT_PATH}
+          export SCRIPT_DIR=${ROOT_PATH}/jalien-setup/bash
+          export SHARED_VOLUME=${ROOT_PATH}/SHARED_VOLUME
+          export JALIEN=${ROOT_PATH}/jalien
+          export JALIEN_SETUP=${ROOT_PATH}/jalien-setup
+          export JALIEN_SOURCE=${{ github.event.inputs.source_jalien_repo }}
+          export JALIEN_SETUP_SOURCE=https://gitlab.cern.ch/jalien/jalien-setup
+          export CE_NAME=shared_volume_JCentral-dev-CE_1
+          export JCENTRAL_NAME=shared_volume_JCentral-dev_1
+          export SCHEDD_NAME=shared_volume_schedd_1
+          export SE_NAME=shared_volume_JCentral-dev-SE_1
+          export WORKER_NAME=shared_volume_worker1_1
+          " >> ${ROOT_PATH}/jalien-setup/bash/config/config.sh  
+          cat ${ROOT_PATH}/jalien-setup/bash/config/config.sh
+      
+      # For production image setup
+      - name: Run jalien-setup bash scripts
+        if: ${{ github.event.inputs.image_tag == 'latest' }}
+        run: |
+          cd ${{ github.workspace }}/../jalien-setup/bash
+          ./start.sh --shared --latest
+      
       # For production image setup
       - name: Run test-suite for all tests
         if: ${{ github.event.inputs.image_tag == 'latest' }}
         run: |
           cd ${{ github.workspace }}/../test-suite
           ./index.sh --latest
+      
+      # For test image setup
+      - name: Run jalien-setup bash scripts
+        if: ${{ github.event.inputs.image_tag == 'test' }}
+        run: |
+          cd ${{ github.workspace }}/../jalien-setup/bash
+          ./start.sh --shared --test
       
       # For test image setup
       - name: Run test-suite for container specific tests
