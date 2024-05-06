@@ -90,6 +90,13 @@ jobs:
           export TESTSCRIPT_PATH=$(pwd)/test-suite/files/testscript_test.sh
           " >> ${{ github.workspace }}/../test-suite/.env   
       - name: Run test-suite for container specific tests
+        if: ${{ github.event.inputs.image_tag }} == 'test'
         run: |
           cd ${{ github.workspace }}/../test-suite
-          ./index.sh --container-only --${{ github.event.inputs.image_tag }}
+          ./index.sh --container-only --test
+          
+      - name: Run test-suite for all tests
+        if: ${{ github.event.inputs.image_tag }} == 'latest'
+        run: |
+          cd ${{ github.workspace }}/../test-suite
+          ./index.sh --latest
