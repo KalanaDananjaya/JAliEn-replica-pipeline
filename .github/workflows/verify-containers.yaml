@@ -89,7 +89,7 @@ jobs:
           echo "
           export SHARED_VOLUME_PATH=$(pwd)/SHARED_VOLUME
           export JALIEN_SETUP_PATH=$(pwd)/jalien-setup
-          export JALIEN_PATH=$(pwd)/../jalien
+          export JALIEN_PATH=${{ github.workspace }}/../jalien
           export CONTAINER_NAME_CE=shared_volume_JCentral-dev-CE_1
           export CONTAINER_NAME_CENTRAL=shared_volume_JCentral-dev_1
           export CONTAINER_NAME_SCHEDD=shared_volume_schedd_1
