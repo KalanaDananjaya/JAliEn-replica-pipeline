@@ -135,10 +135,17 @@ jobs:
         run: |
           cd ${{ github.workspace }}/../test-suite
           ./index.sh --container-only --test
+      
+      - name: Copy log files
+        if: always()
+        run: |
+          cd ${{ github.workspace }}
+          mkdir final_logs
+          cp -r ${{ github.workspace }}/../SHARED_VOLUME/logs/* ./final_logs
 
       - name: Upload log files
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: logs
-          path: ${{ github.workspace }}/../SHARED_VOLUME/logs
+          name: final_logs
+          path: ${{ github.workspace }}/final_logs
