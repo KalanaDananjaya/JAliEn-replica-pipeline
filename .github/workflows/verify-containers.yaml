@@ -138,6 +138,7 @@ jobs:
       
       - name: Copy log files
         if: always()
+        continue-on-error: true #Copying mysql log will fail which is expected
         run: |
           cd ${{ github.workspace }}
           mkdir final_logs
