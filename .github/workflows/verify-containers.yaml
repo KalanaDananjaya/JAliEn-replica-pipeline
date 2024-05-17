@@ -35,7 +35,6 @@ jobs:
           cd ${{ github.workspace }}
           cd ..
           git clone https://gitlab.cern.ch/jalien/jalien-setup
-          cd ./jalien-setup && git checkout origin/updated-sql8-setup
       - name: Clone jalien
         run: |
           cd ${{ github.workspace }}
